@@ -1,32 +1,36 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import Error from './Error'
-const BudgetRequest = () => {
+const BudgetRequest = ({ saveBudget, saveRest, updateRequest }) => {
 
-    const [budget, setBudget ] = useState(0);
+    const [quantity, setQuantity ] = useState(0);
     const [error, setError] = useState(false);
 
-    const defineBudget = ({target: {value}}) =>{
-        setBudget(parseInt(value,10))
+    const defineQuantity = ({target: {value}}) =>{
+        setQuantity(parseInt(value,10))
     }
-    const addBudget = e =>{
+    const addQuantity = e =>{
         e.preventDefault();
-        if(budget < 1 || isNaN(budget)){
+        if(quantity < 1 || isNaN(quantity)){
             setError(true);
             return;
         }
         setError(false);
+        saveBudget(quantity);
+        saveRest(quantity);
+        updateRequest(false)
     }
     return (
         <>
             <h2>Set your budget</h2>
             { error ?  <Error message="Invalid budget"></Error> : null}
             <form
-            onSubmit={addBudget}>
+            onSubmit={addQuantity}>
                 <input 
                 type="number"
                 className="u-full-width"
                 placeholder="Budget"
-                onChange={defineBudget}
+                onChange={defineQuantity}
                 />
                 <input 
                 type="submit" 
@@ -36,5 +40,10 @@ const BudgetRequest = () => {
             </form>
         </>
     )
+}
+BudgetRequest.propTypes = {
+    saveBudget: PropTypes.func.isRequired,
+    saveRest: PropTypes.func.isRequired,
+    updateRequest: PropTypes.func.isRequired,
 }
 export default BudgetRequest
